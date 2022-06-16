@@ -75,7 +75,7 @@ const LeftBar = () => {
         setAutoFocusState(!autoFocusState)
     }
     return (
-        <Box sx={{ flex: 1, ml: 2, mr: 2, height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box sx={{ flex: 1, ml: 2, mr: 3, height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             
             <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4, mb: 4 }}>
@@ -110,6 +110,7 @@ const LeftBar = () => {
                     <Button  sx={{borderRadius: theme.border.auth,color: theme.palette.primary.white, mb:1,p:1,"&:hover":{backgroundColor: theme.palette.primary.darkGreen}, backgroundColor: theme.palette.primary.main,height: 40}} variant="text">Discover Pro</Button>
                 </Box>
             </Box>
+
         </Box>
     )
 }

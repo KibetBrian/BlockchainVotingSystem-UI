@@ -23,11 +23,13 @@ export const theme  = createTheme({
     border:{
         auth: "20px",
         regular: "10px",
-        min: '5px'
+        min: '5px',
     },
     fonts:{
         small: '15px',
+        medium: '20px',
         large: "45px",
-        iconFont:'18px'
+        iconFont:'18px',
+        sl: '34px',
     }
-})
+});
