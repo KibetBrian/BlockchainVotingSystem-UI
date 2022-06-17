@@ -1,14 +1,13 @@
-import { AppBar, Avatar, Badge, IconButton, Slide, Stack } from '@mui/material'
+import { AppBar, Avatar, Badge, Card, Divider, IconButton, ListItemButton, ListItemText, Popover, Slide, Stack, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useState } from 'react'
 import { BsSearch } from 'react-icons/bs'
-import Grid from '@mui/material/Grid'
-import { LinearProgress } from '@mui/material';
 import { useEffect } from 'react'
 import { IoMdNotifications } from 'react-icons/io'
 import { theme } from '../theme'
 import SearchBar from './SearchBar'
 import { ClickAwayListener } from '@mui/base';
+import { useSelector } from 'react-redux'
 
 
 
@@ -18,13 +17,28 @@ const TopBar = () => {
     const imageAddress = "https://images.pexels.com/photos/5358099/pexels-photo-5358099.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     const countryAddress = "https://countryflagsapi.com/png/ke"
 
-    const [searchBarOpen, setSearchBarOpen] = useState(false)
+    const user = useSelector((state) => state.user)
+    const [searchBarOpen, setSearchBarOpen] = useState(false);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        if (anchorEl != null) {
+            handleClose()
+        } else {
+            setAnchorEl(event.currentTarget);
+        }
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
     return (
         <ClickAwayListener onClickAway={() => setSearchBarOpen(false)}>
-
-            {/* <Grid xs item>
-        {notMounted && <LinearProgress value={80} variant={"indeterminate"} title="test" />}
-      </Grid> */}
             <Box sx={{ height: 70, display: 'flex', justifyContent: 'space-between' }}>
                 <IconButton sx={searchBarOpen ? { opacity: '0' } : { opacity: '1' }} onClick={() => setSearchBarOpen(true)}>
                     <BsSearch />
@@ -55,7 +69,44 @@ const TopBar = () => {
                             <IoMdNotifications />
                         </Badge>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={handleClick}>
+                        <Popover
+                            sx={{ p: 1 }}
+                            id={id}
+                            open={open}
+
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+
+                        >
+                            <Card variant="outlined">
+                                <Stack sx={{ p: 1 }}>
+                                    <Typography sx={{fontWeight:"500"}} component="h4" variant="p">
+                                        Brian Kibet
+                                    </Typography>
+                                    <Typography sx={{ mt: 1, fontSize: theme.fonts.rSmall }} component="p">
+                                        briankibet2010@gmail.com
+                                    </Typography>
+                                </Stack>
+                                <Divider />
+                                <Stack sx={{ p: 1 }}>
+                                    <ListItemButton sx={{ borderRadius: theme.border.min }}>
+                                        <ListItemText primary={"Home"} />
+                                    </ListItemButton>
+                                    <ListItemButton sx={{ borderRadius: theme.border.min }}>
+                                        <ListItemText primary={"Profile"} />
+                                    </ListItemButton>
+                                    <Divider sx={{ mt: 1, mb: 1 }} />
+                                    <ListItemButton sx={{ borderRadius: theme.border.min }}>
+                                        <ListItemText primary={"LogOut"} />
+                                    </ListItemButton>
+                                </Stack>
+                            </Card>
+                        </Popover>
                         <Avatar sx={{ cursor: 'pointer' }} alt="Brian Kibet" src={imageAddress} />
                     </IconButton>
                 </Stack>

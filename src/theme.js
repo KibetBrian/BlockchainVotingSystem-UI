@@ -26,8 +26,10 @@ export const theme  = createTheme({
         min: '5px',
     },
     fonts:{
+        rSmall: "14px",
         small: '15px',
         medium: '20px',
+        sm: '24px',
         large: "45px",
         iconFont:'18px',
         sl: '34px',

@@ -10,7 +10,7 @@ const SearchBar = (props) => {
     }
     return (
         <>
-            <Box sx={{ zIndex: 1, height: '50px', left: '22%', position: 'absolute', backdropFilter: 'blur(6px)', width: '50%', display: 'flex', padding: 2, justifyContent: 'space-between', alignItems: "center", borderRadius: theme.border.regular, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}>
+            <Box sx={{ zIndex: 1, height: '50px', left: '23%', position: 'absolute', backdropFilter: 'blur(6px)', width: '50%', display: 'flex', padding: 2, justifyContent: 'space-between', alignItems: "center", borderRadius: theme.border.regular, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}>
                 <BsSearch />
                 <InputBase
                     sx={{ ml: 3, flex: 1, }}

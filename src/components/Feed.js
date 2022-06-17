@@ -1,11 +1,12 @@
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, IconButton, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TopBar from './TopBar'
 import { theme } from '../theme'
 import { BiTrendingUp } from 'react-icons/bi'
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js'
 import { FaCaretLeft, FaCaretRight } from 'react-icons/fa'
+import TopLinearProgress from './TopLinearProgress'
 
 Chart.register(ArcElement);
 
@@ -13,6 +14,10 @@ const imageAddress = "https://images.pexels.com/photos/7177235/pexels-photo-7177
 
 
 const Feed = () => {
+  const [loading, setLoading] =useState(true);
+  useEffect(() => {
+      setLoading(false);
+  }, [])
 
   const name = "Brian"
   const user = {
@@ -78,7 +83,7 @@ const Feed = () => {
   ]
 
   var curIndex = 0;
-  const Carousel = (props) => {
+  const Carousel = () => {
     const [data, setData] = useState(carouselData[curIndex]);
 
     const handleAdd = () => {
@@ -100,6 +105,7 @@ const Feed = () => {
 
     return (
       <Box sx={{ height: "250px", borderRadius: theme.border.regular, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        {loading && <TopLinearProgress />}
         <Box sx={{ position: "absolute", zIndex: -1, objectFit: 'cover', filter: 'brightness(50%)', height: "250px", width: "320px", borderRadius: theme.border.regular }} component="img" src={data.imageAddress} />
         <Stack sx={{ m: 2, zIndex: 1, }} justifyContent="space-between" alignItems="center" direction="row">
           <TimeLineDots id={data.id} />
@@ -121,7 +127,7 @@ const Feed = () => {
   }
 
   const SummaryCard = () => (
-    <Box sx={{ flex: 1, p: 1, m: 2, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3, flex: 1, height: '130px' }}>
+    <Box sx={{ flex: 1, p: 2, m: 2, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3, flex: 1, height: '130px' }}>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
         <Typography component="p">
           Total Voters
@@ -134,7 +140,7 @@ const Feed = () => {
             +20.4%
           </Typography>
         </Stack>
-        <Typography sx={{ fontWeight: "500" }} variant="h4" component={"p"}>
+        <Typography sx={{ fontWeight: "600", fontSize: theme.fonts.sm }} variant="h1" component={"p"}>
           20,492
         </Typography>
       </Box>
@@ -147,7 +153,7 @@ const Feed = () => {
   return (
     <Box sx={{ flex: 4 }}>
       <TopBar />
-      <Stack sx={{ display: 'flex', pt: 4 }} direction="row">
+      <Stack sx={{ display: 'flex', mt: 3 }} direction="row">
         <Stack sx={{ flex: 2, display: 'flex' }}>
           <Box sx={{ pl: 3, pr: 3, pt: 4, display: 'flex', width: "90%", borderRadius: theme.border.auth, height: "220px", backgroundColor: theme.palette.primary.lightGreen }}>
             <Stack sx={{ flex: 4, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
@@ -176,7 +182,7 @@ const Feed = () => {
           <Box>
             <Carousel data={data} />
           </Box>
-          <Box sx={{ flex: 1, p: 1, mt: 4, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3, flex: 1, height: '130px' }}>
+          <Box sx={{ flex: 1, p: 1, mt: 4, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3,  height: '200px', width: '100%' }}>
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
               <Typography component="p">
                 Total Voters
@@ -202,5 +208,4 @@ const Feed = () => {
     </Box >
   )
 }
-
 export default Feed

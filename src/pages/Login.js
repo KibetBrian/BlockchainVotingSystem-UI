@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Container, Stack, Typography } from '@mui/material'
 import { styled } from '@mui/system'
@@ -58,6 +58,9 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 }));
 
 const Login = () => {
+  const [enteredData, setEnteredData] =useState({});
+  console.log(enteredData);
+  
   return (
     <OuterBox>
 
@@ -92,16 +95,7 @@ const Login = () => {
 
           <AuthSocial />
 
-          <LoginForm />
-
-          <Stack sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3, mb: 3 }} direction={'row'}>
-            <FormControlLabel control={<Checkbox defaultChecked />} label="Remember me" />
-            <Link component={RouterLink} to="/auth/forgotPassword" sx={{ cursor: 'pointer' }} variant='subtitle2'>
-              ForgotPassword
-            </Link>
-          </Stack>
-
-          <Button sx={{ display:'flex', alignItems:'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">Sign In</Button>
+          <LoginForm data={enteredData} setData = {setEnteredData}/>
 
         </Box>
         
