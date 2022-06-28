@@ -10,9 +10,12 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link';
+import { useSelector, useDispatch } from "react-redux"
+import { setUser } from '../redux/userSlice'
 
 
 const LoginForm = ({ data, setData }) => {
+    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false)
@@ -50,9 +53,17 @@ const LoginForm = ({ data, setData }) => {
         }
     }
 
-    const handleSubmit = ()=>{
-        let isCredentialsValid = !emailError && !passwordError
-        console.log(isCredentialsValid)
+    const handleSubmit = () => {
+        handleEmailValidation()
+        handlePasswordValidation();
+        let isCredentialsValid = (!emailError && !passwordError) && (data.email?.length > 0 || data.password?.strength > 0)
+        if (isCredentialsValid) {
+            const user = {
+                name: "Brian Kibet",
+                email: "briankibet2010@gmail.com"
+            }
+            dispatch(setUser(user))
+        }
     }
 
     return (
