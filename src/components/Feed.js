@@ -16,7 +16,7 @@ const imageAddress = "https://images.pexels.com/photos/7177235/pexels-photo-7177
 const Feed = () => {
   const [loading, setLoading] =useState(true);
   useEffect(() => {
-      setLoading(false);
+        setLoading(false);
   }, [])
 
   const name = "Brian"
