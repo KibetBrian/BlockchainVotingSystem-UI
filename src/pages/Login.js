@@ -59,7 +59,6 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 
 const Login = () => {
   const [enteredData, setEnteredData] =useState({});
-  console.log(enteredData);
   
   return (
     <OuterBox>
