@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import Login from './pages/Login'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
-import Charts from './sections/Charts'
+import Contestants from './sections/Contestants'
 import WatchList from './sections/WatchList'
 import News from './sections/News'
 import LeftBar from './sections/LeftBar'
@@ -22,7 +22,7 @@ const App = () => {
           <Route index element={user ? <Home /> : <Navigate to="/auth/login" />} />
           <Route path={"/auth/login"} element={user ? <Navigate to="/" /> : <Login />} />
           <Route path={"news"} element={<News />} />
-          <Route path="charts" element={<Charts />} />
+          <Route path="contestants" element={<Contestants />} />
           <Route path="watchlist" element={<WatchList />} />
 
         </Route>
