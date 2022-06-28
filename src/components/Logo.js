@@ -22,7 +22,7 @@ const Right = styled(Box)(({theme})=>({
 const Logo = () => {
   return (
     <Box>
-       <Left>Tradis<Center>Fin</Center><Right>.</Right></Left>
+       <Left>Inter<Center>Gral</Center><Right>.</Right></Left>
     </Box>
   )
 }
