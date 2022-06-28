@@ -8,16 +8,10 @@ import Charts from './sections/Charts'
 import WatchList from './sections/WatchList'
 import News from './sections/News'
 import LeftBar from './sections/LeftBar'
+import { useSelector } from 'react-redux'
 
 const App = () => {
-
-  // const [user, setUser] = useState({
-  //   name: "Kibet Brian",
-  //   age: "23",
-  //   description: "Coffee && algorithms"
-  // })
-
-  const [user, setUser] = useState(false);
+  const user = useSelector((state) => state.user.user.payload)
 
   return (
     <BrowserRouter>
@@ -25,7 +19,7 @@ const App = () => {
       <Routes>
 
         <Route path='/'>
-          <Route index element={user ? <Home />: <Navigate to="/auth/login" />}/>
+          <Route index element={user ? <Home /> : <Navigate to="/auth/login" />} />
           <Route path={"/auth/login"} element={user ? <Navigate to="/" /> : <Login />} />
           <Route path={"news"} element={<News />} />
           <Route path="charts" element={<Charts />} />
