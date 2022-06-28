@@ -8,6 +8,8 @@ import { theme } from '../theme'
 import SearchBar from './SearchBar'
 import { ClickAwayListener } from '@mui/base';
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../redux/userSlice.js'
 
 
 
@@ -16,6 +18,7 @@ const TopBar = () => {
     const [notMounted, setNotMounted] = useState(true);
     const imageAddress = "https://images.pexels.com/photos/5358099/pexels-photo-5358099.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     const countryAddress = "https://countryflagsapi.com/png/ke"
+    const dispatch  = useDispatch();
 
     const user = useSelector((state) => state.user)
     const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -33,6 +36,10 @@ const TopBar = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogOut =()=>{
+        dispatch(setUser(null))
+    }
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -101,7 +108,7 @@ const TopBar = () => {
                                         <ListItemText primary={"Profile"} />
                                     </ListItemButton>
                                     <Divider sx={{ mt: 1, mb: 1 }} />
-                                    <ListItemButton sx={{ borderRadius: theme.border.min }}>
+                                    <ListItemButton onClick={handleLogOut} sx={{ borderRadius: theme.border.min }}>
                                         <ListItemText primary={"LogOut"} />
                                     </ListItemButton>
                                 </Stack>
