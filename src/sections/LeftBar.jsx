@@ -6,6 +6,7 @@ import Logo from '../components/Logo'
 import { FiTrendingUp } from 'react-icons/fi'
 import { theme } from '../theme'
 import { BiHomeAlt } from 'react-icons/bi'
+import {FaUserTie} from 'react-icons/fa'
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { AiFillEye, AiOutlineLineChart } from 'react-icons/ai';
 import { TiNews } from 'react-icons/ti'
@@ -17,9 +18,9 @@ const listData = [
         to: "/"
     },
     {
-        title: "WatchList",
-        Icon: <AiFillEye style={{ fontSize: '20px' }} />,
-        to: "/watchlist"
+        title: "Contestants",
+        Icon: <FaUserTie style={{ fontSize: '20px' }} />,
+        to: "/contestants"
     },
     {
         title: "Charts",
