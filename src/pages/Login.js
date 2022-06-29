@@ -80,7 +80,7 @@ const Login = () => {
       <RightBox>
 
         <Box sx={{ display: 'flex', justifyContent: 'end', mt: 1 }}>
-          <Typography fontSize={'14px'}>Don't have an account? <Link variant="subtitle2" component={RouterLink} to="/auth/register">
+          <Typography fontSize={'14px'}>Don't have an account? <Link variant="subtitle2" component={RouterLink} to="/auth/signup">
             Get started
           </Link></Typography>
         </Box>
@@ -88,7 +88,7 @@ const Login = () => {
         <Box sx={{ ml: 9, mr: 9 }}>
 
           <Box sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h5" gutterBottom>Sign In To TradisFin</Typography>
+            <Typography variant="h5" gutterBottom>Sign In To InterGral</Typography>
             <Typography fontSize={17} variant="p" color={'#637381'}>Enter your credentials below</Typography>
           </Box>
 

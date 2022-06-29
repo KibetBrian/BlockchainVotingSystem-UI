@@ -2,6 +2,7 @@ import { Box } from '@mui/system'
 import React from 'react'
 import {Typography} from '@mui/material'
 import { styled } from '@mui/system'
+
 const logoOuter = {
     display: 'flex',
     alignItems: 'center'
