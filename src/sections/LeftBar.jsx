@@ -8,7 +8,7 @@ import { theme } from '../theme'
 import { BiHomeAlt } from 'react-icons/bi'
 import {FaUserTie} from 'react-icons/fa'
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { AiFillEye, AiOutlineLineChart } from 'react-icons/ai';
+import { AiFillEye, AiOutlineLineChart, AiFillCheckSquare } from 'react-icons/ai';
 import { TiNews } from 'react-icons/ti'
 
 const listData = [
@@ -23,14 +23,19 @@ const listData = [
         to: "/contestants"
     },
     {
-        title: "Charts",
-        Icon: <AiOutlineLineChart style={{ fontSize: '20px' }} />,
-        to: "/charts"
+        title: "VoterRegistration",
+        Icon: <AiFillCheckSquare style={{ fontSize: '20px' }} />,
+        to: "/voter/registration"
     },
     {
-        title: "News",
+        title: "ContestantRegistration",
+        Icon: <AiFillCheckSquare style={{ fontSize: '20px' }} />,
+        to: "/contestant/registration"
+    },
+    {
+        title: "SystemInformation",
         Icon: <TiNews style={{ fontSize: '20px' }} />,
-        to: "/news"
+        to: "/information"
     }
 ]
 
