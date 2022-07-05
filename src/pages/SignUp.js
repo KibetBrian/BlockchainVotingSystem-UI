@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Container, Stack, Typography } from '@mui/material'
+import { Container, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Logo from '../components/Logo';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import AuthSocial from '../components/AuthSocial';
-import LoginForm from '../components/LoginForm';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
 import SignUpForm from '../components/SignUpForm';
+import client from '../axios';
+import { useSelector, useDispatch } from 'react-redux'
+import { isFetching } from '../redux/userSlice';
+
 
 const OuterBox = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -59,8 +59,48 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 }));
 
 const SignUp = () => {
-  const [enteredData, setEnteredData] =useState({});
+  const [enteredData, setEnteredData] = useState({});
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch()
   
+  const data = {
+    fullName: enteredData.firstName + " " + enteredData.lastName,
+    email: enteredData.email,
+    password: enteredData.password
+  }
+  
+  const [signUpStatus, setSignUpStatus] = useState(null)
+  const [signUpError, setSignUpError] = useState('')
+  console.log(signUpError)
+  
+  const handleSubmit = async () => {
+    try {
+      dispatch(isFetching(true))
+      let res = await client.post('/user/create', data)
+      dispatch(isFetching(false))
+      if (res.status === 200) {
+        setSignUpStatus(true)
+      } else {
+        setSignUpStatus(false)
+      }
+    }
+    catch (e) {
+      console.log(e)
+      setSignUpStatus(false)
+      switch (e.response.request.status) {
+        case 500:
+          setSignUpError("Internal Server Error")
+          break;
+        case 409:
+          setSignUpError("Seems you already registered")
+          break;
+        default:
+          setSignUpError("Unknown error")
+          break;
+      }
+    }
+  }
+
   return (
     <OuterBox>
       <LeftBox>
@@ -94,10 +134,10 @@ const SignUp = () => {
 
           <AuthSocial />
 
-          <SignUpForm data={enteredData} setData = {setEnteredData}/>
+          <SignUpForm data={enteredData} setData={setEnteredData} handleSignUp={handleSubmit} isFetching={user.isFetching}/>
 
         </Box>
-        
+
       </RightBox>
 
     </OuterBox>
