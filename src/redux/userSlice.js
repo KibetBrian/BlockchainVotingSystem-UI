@@ -2,20 +2,25 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-    user: {}
+    userData: null,
+    isFetching: false,
+    error: false
 }
 
 export const userSlice = createSlice(
-  {
+  { 
     name: 'user',
     initialState,
     reducers: {
-        setUser:(state, user)=>{
-          state.user = user
+        isFetching: (state, data)=>{
+          state.isFetching = data.payload
+        },
+        setUserData: (state, data)=>{
+          state.user=data
         }
     }
   }
 );
 
-export const {setUser} =userSlice.actions;
+export const {setUserData, isFetching} =userSlice.actions;
 export default userSlice.reducer;
