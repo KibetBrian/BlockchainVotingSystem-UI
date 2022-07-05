@@ -9,7 +9,7 @@ import SearchBar from './SearchBar'
 import { ClickAwayListener } from '@mui/base';
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { setUser } from '../redux/userSlice.js'
+import { setUserData } from '../redux/userSlice.js'
 
 
 
@@ -38,7 +38,7 @@ const TopBar = () => {
     };
 
     const handleLogOut =()=>{
-        dispatch(setUser(null))
+        dispatch(setUserData(null))
     }
 
     const open = Boolean(anchorEl);
