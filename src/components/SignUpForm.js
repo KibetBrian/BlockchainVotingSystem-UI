@@ -12,9 +12,10 @@ import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link';
 import { useSelector, useDispatch } from "react-redux"
 import { setUser } from '../redux/userSlice'
+import CircularProgress from '@mui/material/CircularProgress';
 
 
-const SignUpForm = ({ data, setData }) => {
+const SignUpForm = ({ data, setData, handleSignUp, isFetching }) => {
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(false);
@@ -73,13 +74,10 @@ const SignUpForm = ({ data, setData }) => {
         handleEmailValidation()
         handlePasswordValidation();
         let isCredentialsValid = (!emailError && !passwordError) && (data.email?.length > 0 || data.password?.strength > 0)
-        if (isCredentialsValid) {
-            const user = {
-                name: "Brian Kibet",
-                email: "briankibet2010@gmail.com"
-            }
-            dispatch(setUser(user))
+        if (isCredentialsValid){
+            handleSignUp()
         }
+      
     }
 
     return (
@@ -115,7 +113,7 @@ const SignUpForm = ({ data, setData }) => {
                         ForgotPassword
                     </Link>
                 </Stack>
-                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">Sign In</Button>
+                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{isFetching ? <CircularProgress /> : 'Sign In'}</Button>
 
 
             </Stack>
