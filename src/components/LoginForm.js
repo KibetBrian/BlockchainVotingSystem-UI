@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link';
 import { useSelector, useDispatch } from "react-redux"
-import { setUser } from '../redux/userSlice'
+import { setUserData } from '../redux/userSlice'
 
 
 const LoginForm = ({ data, setData }) => {
@@ -62,7 +62,7 @@ const LoginForm = ({ data, setData }) => {
                 name: "Brian Kibet",
                 email: "briankibet2010@gmail.com"
             }
-            dispatch(setUser(user))
+            dispatch(setUserData(user))
         }
     }
 
