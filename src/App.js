@@ -15,7 +15,8 @@ import SystemInformation from './sections/SystemInformation'
 import SignUp from './pages/SignUp'
 
 const App = () => {
-  const user = useSelector((state) => state.user)
+  const user = useSelector(state => state.user);
+
 
   return (
     <BrowserRouter>
@@ -23,10 +24,10 @@ const App = () => {
       <Routes>
 
         <Route path='/'>
-          <Route index element={user.userData ? <Home /> : <Navigate to="/auth/login" />} />
+          <Route index element={user.data ? <Home /> : <Navigate to="/auth/login" />} />
           <Route path={"/auth/"}>
-            <Route path={"/auth/login"} element={user.userData ? <Navigate to="/" /> : <Login />} />
-            <Route path={"/auth/signup"} element={user.userData ? <Navigate to="/" /> : <SignUp />} />
+            <Route path={"/auth/login"} element={user.data ? <Navigate to="/" /> : <Login />} />
+            <Route path={"/auth/signup"} element={user.data ? <Navigate to="/" /> : <SignUp />} />
           </Route>
           <Route path={"news"} element={<News />} />
           <Route path={"/voter/registration"} element={<VoterRegistration />} />
