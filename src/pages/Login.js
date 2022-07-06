@@ -10,6 +10,9 @@ import LoginForm from '../components/LoginForm';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import client from '../axios';
+import { useSelector, useDispatch } from 'react-redux'
+import { setUserData } from '../redux/userSlice';
 
 const OuterBox = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -58,8 +61,51 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 }));
 
 const Login = () => {
-  const [enteredData, setEnteredData] =useState({});
+
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
   
+
+  const [enteredData, setEnteredData] = useState({});
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    message: '',
+    severity: 'error',
+    title: ''
+  });
+  const HideSnackBar = () => {
+    setTimeout(hideSnackBar, 4000);
+    function hideSnackBar() {
+      setSnackBar({ ...snackBar, open: false })
+    }
+  }
+
+
+
+  const handleLogin = async () => {
+
+    try {
+      const response = await client.post('/user/login', enteredData);
+      dispatch(setUserData(response.data))
+      console.log("This is user",user)
+    } catch (e) {
+      console.log(e);
+      switch (e.response.status) {
+        case 401:
+          setSnackBar({ ...snackBar,open: true,message: e.response.data.Message, severity: 'error', title: 'Error' });
+          HideSnackBar();
+          break;
+        case 404:
+          setSnackBar({ ...snackBar,open: true,message: e.response.data.error, severity: 'error', title: 'Error' });
+          HideSnackBar();
+        default:
+          break;
+      }
+    }
+  }
+
   return (
     <OuterBox>
 
@@ -94,10 +140,10 @@ const Login = () => {
 
           <AuthSocial />
 
-          <LoginForm data={enteredData} setData = {setEnteredData}/>
+          <LoginForm isFetching= {user.isFetching} snackBar={snackBar} handleLogin={handleLogin} data={enteredData} setData={setEnteredData} />
 
         </Box>
-        
+
       </RightBox>
 
     </OuterBox>
