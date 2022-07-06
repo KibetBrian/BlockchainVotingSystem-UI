@@ -10,12 +10,14 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link';
-import { useSelector, useDispatch } from "react-redux"
-import { setUser } from '../redux/userSlice'
+import { useDispatch } from "react-redux"
 import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 
-const SignUpForm = ({ data, setData, handleSignUp, isFetching }) => {
+const SignUpForm = ({ data, setData, handleSignUp, isFetching, snackBar }) => {
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(false);
@@ -60,12 +62,12 @@ const SignUpForm = ({ data, setData, handleSignUp, isFetching }) => {
     }
 
     //handle name validation
-    const handleNameValidation = ()=>{
+    const handleNameValidation = () => {
         console.log(data.firstName)
-        if (!validNameRegex.test(data.firstName)){
+        if (!validNameRegex.test(data.firstName)) {
             setFirstNameError(true)
         }
-        if (!validNameRegex.test(data.lastName)){
+        if (!validNameRegex.test(data.lastName)) {
             setLastNameError(true);
         }
     }
@@ -74,16 +76,29 @@ const SignUpForm = ({ data, setData, handleSignUp, isFetching }) => {
         handleEmailValidation()
         handlePasswordValidation();
         let isCredentialsValid = (!emailError && !passwordError) && (data.email?.length > 0 || data.password?.strength > 0)
-        if (isCredentialsValid){
+        if (isCredentialsValid) {
             handleSignUp()
         }
-      
+
     }
+    const { vertical, horizontal, open, message, severity, title, messageFirst } = snackBar
+
 
     return (
         <Box>
             <Stack spacing={3}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    message={message}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>
+                        <AlertTitle>{title}</AlertTitle>
+                        {messageFirst}— <strong>{message}!</strong>
+                    </Alert>
+                </Snackbar>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <TextField error={firstNameError} onFocus={() => setFirstNameError(false)} onBlur={handleNameValidation} name={"firstName"} onChange={handleChange} id="firstName" type={"text"} label="First Name" variant="outlined" />
                     <TextField error={lastNameError} onFocus={() => setLastNameError(false)} onBlur={handleNameValidation} name={"lastName"} onChange={handleChange} id="firstName" type={"text"} label="Last Name" variant="outlined" />
                 </Box>
@@ -113,7 +128,7 @@ const SignUpForm = ({ data, setData, handleSignUp, isFetching }) => {
                         ForgotPassword
                     </Link>
                 </Stack>
-                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{isFetching ? <CircularProgress /> : 'Sign In'}</Button>
+                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{isFetching ? <CircularProgress /> : 'Sign Un'}</Button>
 
 
             </Stack>
