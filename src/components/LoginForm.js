@@ -12,10 +12,16 @@ import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link';
 import { useSelector, useDispatch } from "react-redux"
 import { setUserData } from '../redux/userSlice'
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import { isFetching } from '../redux/userSlice';
 
+const LoginForm = ({ data, setData, handleLogin, snackBar}) => {
+    const user = useSelector((state) => state.user)
+    const dispatch  = useDispatch()
 
-const LoginForm = ({ data, setData }) => {
-    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false)
@@ -53,22 +59,33 @@ const LoginForm = ({ data, setData }) => {
         }
     }
 
+    //Handles validations and posts data when submit is sign in  button is clicked
     const handleSubmit = () => {
         handleEmailValidation()
         handlePasswordValidation();
         let isCredentialsValid = (!emailError && !passwordError) && (data.email?.length > 0 || data.password?.strength > 0)
         if (isCredentialsValid) {
-            const user = {
-                name: "Brian Kibet",
-                email: "briankibet2010@gmail.com"
-            }
-            dispatch(setUserData(user))
+            dispatch(isFetching(true))
+            handleLogin()
+            dispatch(isFetching(false))
         }
     }
+    const { vertical, horizontal, open, message, severity, title } = snackBar
 
     return (
         <Box>
             <Stack spacing={3}>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    message={message}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>
+                        <AlertTitle>{title}</AlertTitle>
+                        Error occurred— <strong>{message}!</strong>
+                    </Alert>
+                </Snackbar>
                 <TextField error={emailError} onFocus={() => setEmailError(false)} onBlur={handleEmailValidation} name={"email"} onChange={handleChange} id="email" type={"email"} label="Email Address" variant="outlined" />
                 <TextField id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -95,7 +112,7 @@ const LoginForm = ({ data, setData }) => {
                         ForgotPassword
                     </Link>
                 </Stack>
-                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">Sign In</Button>
+                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{user.isFetching ? <CircularProgress /> : 'Sign In'}</Button>
 
 
             </Stack>
