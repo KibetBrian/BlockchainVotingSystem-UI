@@ -61,45 +61,59 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 const SignUp = () => {
   const [enteredData, setEnteredData] = useState({});
   const user = useSelector(state => state.user);
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    message: '',
+    severity: '',
+    title: ''
+  });
+
+
   const data = {
     fullName: enteredData.firstName + " " + enteredData.lastName,
     email: enteredData.email,
     password: enteredData.password
   }
-  
-  const [signUpStatus, setSignUpStatus] = useState(null)
-  const [signUpError, setSignUpError] = useState('')
-  console.log(signUpError)
-  
+
+
   const handleSubmit = async () => {
     try {
       dispatch(isFetching(true))
       let res = await client.post('/user/create', data)
       dispatch(isFetching(false))
       if (res.status === 200) {
-        setSignUpStatus(true)
-      } else {
-        setSignUpStatus(false)
+        setSnackBar({...snackBar, message: "Successfully signed up, proceed to login", severity: "success", open: true,title:"Success", messageFirst: "Successfully registered"})
       }
     }
     catch (e) {
-      console.log(e)
-      setSignUpStatus(false)
       switch (e.response.request.status) {
         case 500:
-          setSignUpError("Internal Server Error")
+          setSnackBar({ ...snackBar, open: true, message: "Internal Server Error" });
+          HideSnackBar()
+          dispatch(isFetching(false))
           break;
         case 409:
-          setSignUpError("Seems you already registered")
+          setSnackBar({ ...snackBar, open: true, message: "Email already taken", title:"Error", severity: "error" });
+          HideSnackBar()
+          dispatch(isFetching(false))
           break;
         default:
-          setSignUpError("Unknown error")
+          setSnackBar({ ...snackBar, open: true, message: "Unknown error occurred",title:"Error", severity: "error" })
+          HideSnackBar()
           break;
       }
     }
   }
+  const HideSnackBar = ()=>{
+    setTimeout(hideSnackBar, 4000);
+    function hideSnackBar (){
+        setSnackBar({...snackBar, open: false})
+    }
+}
 
   return (
     <OuterBox>
@@ -134,7 +148,7 @@ const SignUp = () => {
 
           <AuthSocial />
 
-          <SignUpForm data={enteredData} setData={setEnteredData} handleSignUp={handleSubmit} isFetching={user.isFetching}/>
+          <SignUpForm snackBar={snackBar} data={enteredData} setData={setEnteredData} handleSignUp={handleSubmit} isFetching={user.isFetching} />
 
         </Box>
 
