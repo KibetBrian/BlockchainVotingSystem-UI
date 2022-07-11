@@ -7,6 +7,8 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js'
 import { FaCaretLeft, FaCaretRight } from 'react-icons/fa'
 import TopLinearProgress from './TopLinearProgress'
+import client from '../axios'
+import { useSelector } from 'react-redux'
 
 Chart.register(ArcElement);
 
@@ -14,15 +16,42 @@ const imageAddress = "https://images.pexels.com/photos/7177235/pexels-photo-7177
 
 
 const Feed = () => {
-  const [loading, setLoading] =useState(true);
+
+  const userData = useSelector(state => state.user.data);
+  const [TotalVoters, setTotalVoters] = useState(0);
+  const [TotalUsers, setTotalUsers] = useState(0);
+  const [TotalVotedVoters, setTotalVotedVoters] = useState(0);
+  console.log(userData)
+
   useEffect(() => {
-        setLoading(false);
+
+    const FetchTotalVoters = async () => {
+      const response = await client.get('/voter/total');
+      const data = await response.data
+      setTotalVoters(data);
+    }
+
+    const FetchTotalUsers = async () => {
+      const response = await client.get('/user/total');
+      const data = response.data
+      setTotalUsers(data);
+    }
+
+    const FetchTotalVotedVoters = async () => {
+      const response = await client.get('/voter/voted');
+      const data = response.data;
+      setTotalVotedVoters(data);
+    }
+    FetchTotalVoters();
+    FetchTotalUsers();
+    FetchTotalVotedVoters();
   }, [])
 
-  const name = "Brian"
-  const user = {
-    name: 'Brian Kibet'
-  }
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(false);
+  }, [])
 
   const data = {
     labels: [
@@ -126,11 +155,11 @@ const Feed = () => {
     )
   }
 
-  const SummaryCard = () => (
+  const SummaryCard = ({ title, total }) => (
     <Box sx={{ flex: 1, p: 2, m: 2, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3, flex: 1, height: '130px' }}>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
         <Typography component="p">
-          Total Voters
+          {title}
         </Typography>
         <Stack sx={{ display: 'flex', alignItems: 'center' }} direction="row">
           <Box sx={{ display: 'flex', mr: 1, justifyContent: 'center', alignItems: 'center', width: '30px', height: '30px', borderRadius: '50%', backgroundColor: theme.palette.primary.lightGreen }}>
@@ -141,7 +170,7 @@ const Feed = () => {
           </Typography>
         </Stack>
         <Typography sx={{ fontWeight: "600", fontSize: theme.fonts.sm }} variant="h1" component={"p"}>
-          20,492
+          {total}
         </Typography>
       </Box>
       <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -158,10 +187,10 @@ const Feed = () => {
           <Box sx={{ pl: 3, pr: 3, pt: 4, display: 'flex', width: "90%", borderRadius: theme.border.auth, height: "220px", backgroundColor: theme.palette.primary.lightGreen }}>
             <Stack sx={{ flex: 4, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
               <Typography sx={{ fontSize: theme.fonts.sl }} component={"p"} variant={"h1"}>
-                Welcome back {user.name}!
+                Welcome back {userData.fullName}!
               </Typography>
               <Typography component="p">
-                Everything you need at one sight.
+                Everything clear at one sight.
               </Typography>
               <Button sx={{ textTransform: 'none', fontSize: theme.fonts.medium, display: 'flex', height: '40px', justifyContent: 'center', width: '20%', pt: 2, backgroundColor: theme.palette.primary.main, color: theme.palette.primary.white, ":hover": { backgroundColor: theme.palette.primary.darkGreen } }}>
                 stats
@@ -174,18 +203,18 @@ const Feed = () => {
             </Stack>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'row', mt: 2 }}>
-            <SummaryCard />
-            <SummaryCard />
+            <SummaryCard title={"Total Users"} total={TotalUsers} />
+            <SummaryCard title={"Registered Voters"} total={TotalVoters} />
           </Box>
         </Stack>
         <Box sx={{ flex: 1, ml: 4, mr: 5 }}>
           <Box>
             <Carousel data={data} />
           </Box>
-          <Box sx={{ flex: 1, p: 1, mt: 4, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3,  height: '200px', width: '100%' }}>
+          <Box sx={{ flex: 1, p: 1, mt: 4, display: 'flex', justifyContent: 'space-around', borderRadius: theme.border.regular, boxShadow: 3, height: '200px', width: '100%' }}>
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
               <Typography component="p">
-                Total Voters
+                Voter Turnout
               </Typography>
               <Stack sx={{ display: 'flex', alignItems: 'center' }} direction="row">
                 <Box sx={{ display: 'flex', mr: 1, justifyContent: 'center', alignItems: 'center', width: '30px', height: '30px', borderRadius: '50%', backgroundColor: theme.palette.primary.lightGreen }}>
@@ -196,7 +225,7 @@ const Feed = () => {
                 </Typography>
               </Stack>
               <Typography sx={{ fontWeight: "500" }} variant="h4" component={"p"}>
-                20,492
+                {TotalVotedVoters}
               </Typography>
             </Box>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

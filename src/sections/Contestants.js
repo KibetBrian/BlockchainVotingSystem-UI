@@ -42,9 +42,6 @@ const Contestants = () => {
       }
       FetchData()
     }
-    if (currentPage === 'Governor'){
-
-    }
   }, [currentPage])
 
   return (

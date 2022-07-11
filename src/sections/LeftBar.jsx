@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Button, Divider, Link, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import Logo from '../components/Logo'
@@ -10,6 +10,8 @@ import {FaUserTie} from 'react-icons/fa'
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { AiFillEye, AiOutlineLineChart, AiFillCheckSquare } from 'react-icons/ai';
 import { TiNews } from 'react-icons/ti'
+import { useSelector } from 'react-redux'
+
 
 const listData = [
     {
@@ -40,6 +42,7 @@ const listData = [
 ]
 
 const ListComponent = (props) => {
+    const user = useSelector(state => state.user.data)
     const location = useLocation();
     const [selected, setSelected] = useState(false);
     const isActive = location.pathname === props.object.to;
@@ -52,7 +55,6 @@ const ListComponent = (props) => {
         fontWeight: '500',
         p: 3
     }
-
     const normalStyle = {
         borderRadius: theme.border.min,
         height: 45,
@@ -65,12 +67,14 @@ const ListComponent = (props) => {
 
 
     return (
-        <ListItemButton  component={RouterLink} to={props.object.to} onClick={() => setSelected(true)} key={props.key} selected={isActive} sx={isActive ? activeStyle : normalStyle}>
+      <Box key={props.key} sx={{display: props.key===3 && !user.isAdmin ? 'none': ''}}>
+          <ListItemButton  component={RouterLink} to={props.object.to} onClick={() => setSelected(true)} key={props.key} selected={isActive} sx={isActive ? activeStyle : normalStyle}>
             {props.object.Icon}
             <Box sx={{ fontSize: '16px', ml: 2 }}>
                 {props.object.title}
             </Box>
         </ListItemButton>
+      </Box>
     )
 }
 
@@ -80,6 +84,8 @@ const LeftBar = () => {
     const setAutoFocus = () => {
         setAutoFocusState(!autoFocusState)
     }
+
+    const user = useSelector(state => state.user.data)
     return (
         <Box sx={{ flex: 1, ml: 2, mr: 3, height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             
@@ -95,8 +101,8 @@ const LeftBar = () => {
                         </Box>
                     </Box>
                     <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Typography fontSize={theme.fonts.small} variant="h6" component="p">Liana Grey</Typography>
-                        <Typography color={theme.palette.primary.grey} variant="p" component="p">admin</Typography>
+                        <Typography fontSize={theme.fonts.small} variant="h6" component="p">{user.fullName}</Typography>
+                        <Typography color={theme.palette.primary.grey} variant="p" component="p">{user.isAdmin ? "Admin"? user.isVoter: "Voter": "User"}</Typography>
                     </Box>
                 </Box>
             </Box>

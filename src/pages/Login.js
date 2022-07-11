@@ -63,8 +63,8 @@ const GetStartedLink = styled('a')(({ theme }) => ({
 const Login = () => {
 
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
-  
+  const user = useSelector(state => state.user);
+
 
   const [enteredData, setEnteredData] = useState({});
   const [snackBar, setSnackBar] = useState({
@@ -85,7 +85,7 @@ const Login = () => {
 
 
   const handleLogin = async () => {
-
+    
     try {
       const response = await client.post('/user/login', enteredData);
       dispatch(setUserData(response.data))
@@ -100,7 +100,14 @@ const Login = () => {
         case 404:
           setSnackBar({ ...snackBar,open: true,message: e.response.data.error, severity: 'error', title: 'Error' });
           HideSnackBar();
+          break;
+        case 500:
+          setSnackBar({ ...snackBar,open: true,message: e.response.data.error, severity: 'error', title: 'Error' });
+          HideSnackBar();
+          break;
         default:
+          setSnackBar({ ...snackBar,open: true,message: e.message, severity: 'error', title: 'Error' });
+          HideSnackBar();
           break;
       }
     }
