@@ -15,6 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import { DataGrid } from '@mui/x-data-grid';
+
 const ContestantRegistration = () => {
 
     const user = useSelector(state => state.user);

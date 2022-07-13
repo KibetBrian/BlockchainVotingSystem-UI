@@ -102,7 +102,7 @@ const LeftBar = () => {
                     </Box>
                     <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <Typography fontSize={theme.fonts.small} variant="h6" component="p">{user.fullName}</Typography>
-                        <Typography color={theme.palette.primary.grey} variant="p" component="p">{user.isAdmin ? "Admin"? user.isVoter: "Voter": "User"}</Typography>
+                        <Typography color={theme.palette.primary.grey} variant="p" component="p">{user.isAdmin ? "Admin" : "User"}</Typography>
                     </Box>
                 </Box>
             </Box>

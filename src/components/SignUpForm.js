@@ -128,7 +128,7 @@ const SignUpForm = ({ data, setData, handleSignUp, isFetching, snackBar }) => {
                         ForgotPassword
                     </Link>
                 </Stack>
-                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{isFetching ? <CircularProgress /> : 'Sign Un'}</Button>
+                <Button onClick={handleSubmit} sx={{ display: 'flex', alignItems: 'center', color: "#fff", height: "50px" }} fullWidth size="large" variant="contained">{isFetching ? <CircularProgress /> : 'Sign Up'}</Button>
 
 
             </Stack>
