@@ -15,13 +15,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ListItemText from '@mui/material/ListItemText';
 import { AiTwotoneCopy } from 'react-icons/ai'
 import client from '../axios'
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { GrFormCheckmark } from 'react-icons/gr'
 import { MdFreeCancellation } from 'react-icons/md'
 import LinearProgress from '@mui/material/LinearProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { isFetching } from '../redux/userSlice'
-
-
+import { Tooltip } from '@mui/material'
+import { MdCancel } from 'react-icons/md'
+import { FaVoteYea } from 'react-icons/fa'
+import { TiTick } from 'react-icons/ti'
 
 const RegisteredVotersColumns = [
     { field: 'id', headerName: 'ID', width: 300 },
@@ -37,111 +41,6 @@ const RegisteredVotersRows = [
     { id: 1, fullName: 'Snow', address: '0x1234567890123456789012345678901234567890' },
 ];
 
-const PendingVoterRegistrationRequestColumns = [
-    {
-        field: 'id',
-        headerName: 'ID',
-        width: 100
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full Name',
-        width: 170,
-        editable: false,
-    },
-    {
-        field: 'email',
-        headerName: 'Voter\'s Email',
-        width: 170,
-        editable: false,
-    },
-    {
-        field: 'nationalIDNumber',
-        headerName: 'National ID Number',
-        width: 170,
-        editable: false,
-    },
-    {
-        field: 'voted',
-        headerName: 'Voted',
-        width: 100,
-        editable: false,
-    },
-    {
-        field: 'verified',
-        headerName: 'Verified',
-        width: 100,
-        editable: false,
-    },
-    {
-        field: 'ethereumAddress',
-        headerName: 'Ethereum Address',
-        width: 360,
-        editable: false,
-    },
-    {
-        field: 'reject',
-        headerName: 'Reject',
-        width: 100,
-        editable: false,
-        renderCell: (rowData) => {
-            const HandleAction = async () => {
-                const [voterData, setVoterData] = useState(rowData.rows)
-                const [confirmVoterDialogOpen, setConfirmVoterDialogOpen] = useState(false);
-
-                const confirmVoterHandleClose = () => {
-                    setConfirmVoterDialogOpen(false);
-                }
-
-                const [confirmVoterMessage, setConfirmVoterMessage] = useState("");
-
-                console.log(rowData)
-                try {
-                    const response = await client.post("voter/reject", { ethereumAddress: rowData.row.ethereumAddress });
-                    console.log(response.data)
-                } catch (err) {
-                    console.log(err)
-                }
-            }
-
-            return (         
-
-                    <IconButton onClick={HandleAction}>
-                            <MdFreeCancellation />
-                    </IconButton>
-            )
-        }
-    },
-    {
-        field: 'confirm',
-        headerName: 'Confirm',
-        width: 100,
-        editable: false,
-        renderCell: (rowData) => {
-
-            const handleAction = async () => {
-                console.log(rowData)
-                try {
-                    const response = await client.post("voter/confirm", { ethereumAddress: rowData.row.ethereumAddress });
-
-                    console.log(response.data)
-                } catch (err) {
-                    console.log(err)
-                }
-            }
-
-            return (
-                <Box>
-                    <IconButton onClick={handleAction}>
-                        <GrFormCheckmark />
-                    </IconButton>
-                </Box>
-            )
-        }
-    },
-
-
-];
 
 const MessageDialog = ({ title, message }) => {
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -169,41 +68,7 @@ const ErrorDialog = ({ open, onClose, message }) => {
         </Dialog>
     )
 }
-const PendingVoterRegistration = () => {
-    const [pendingVoters, setPendingVoters] = useState([]);
-    console.log("This is pending voters", pendingVoters)
 
-    useEffect(() => {
-        const HandleFetchData = async () => {
-            try {
-                const response = await client.get("voter/pending");
-                setPendingVoters(response.data.pendingVoters);
-            }
-            catch (e) {
-                console.log(e)
-            }
-        }
-        HandleFetchData();
-    }, [])
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', m: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', m: 2 }}>
-                <Typography component="h5" variant="h5" sx={{ m: 1 }}>
-                    Pending Voter Registration
-                </Typography>
-            </Box>
-            <Box sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={pendingVoters}
-                    columns={PendingVoterRegistrationRequestColumns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    checkboxSelection
-                    disableSelectionOnClick
-                />
-            </Box>
-        </Box>)
-}
 
 const ConfirmDialog = ({ open, onClose, address }) => {
     const CopyAddress = () => {
@@ -224,7 +89,7 @@ const ConfirmDialog = ({ open, onClose, address }) => {
     )
 }
 
-const RegisteredVoters = () => {
+const RegisteredVoters = ({dependency}) => {
     const [RegisteredVoters, setRegisteredVoters] = useState([]);
     useEffect(() => {
         const FetchRegisteredVoters = async () => {
@@ -236,7 +101,7 @@ const RegisteredVoters = () => {
             }
         }
         FetchRegisteredVoters();
-    }, [])
+    }, [dependency])
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', m: 2 }}>
@@ -281,7 +146,6 @@ const ConfirmVoterDialog = ({ data, open, handleClose, message, action }) => {
 
 
 const VoterRegistration = () => {
-    const votersAddressRef = useRef(null);
     const user = useSelector(state => state.user);
     const dispatch = useDispatch()
 
@@ -298,27 +162,24 @@ const VoterRegistration = () => {
 
     const ConnectMetamask = async () => {
         let ethereum = window.ethereum;
-
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
         if (!ethereum) {
             setErrorMessage("No wallet installed on this browser");
             setErrorDialogOpen(true);
             return
         }
         setDialogOpen(true)
-        let accounts = await ethereum.request({ method: 'eth_accounts' });
+
+        const accounts = await provider.send("eth_requestAccounts", []);
         setAccount(accounts[0]);
+
         if (!account) {
             setDialogOpen(false);
             setErrorMessage("Seems you have not logged into your wallet");
             setErrorDialogOpen(true);
             return
         }
-        votersAddressRef.current.value = account;
-
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner()
-        console.log(provider)
     }
 
     const HandleBackDropClose = () => {
@@ -372,6 +233,220 @@ const VoterRegistration = () => {
     }
 
 
+    //Confirm Pending Voter Start
+    const [confirmVoterAddress, setConfirmVoterAddress] = useState(null);
+
+    const PendingVoterRegistrationRequestColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            width: 100
+        },
+        {
+            field: 'fullName',
+            headerName: 'Full Name',
+            width: 170,
+            editable: false,
+        },
+        {
+            field: 'email',
+            headerName: 'Voter\'s Email',
+            width: 170,
+            editable: false,
+        },
+        {
+            field: 'nationalIDNumber',
+            headerName: 'National ID Number',
+            width: 170,
+            editable: false,
+        },
+        {
+            field: 'voted',
+            headerName: 'Voted',
+            width: 100,
+            editable: false,
+        },
+        {
+            field: 'verified',
+            headerName: 'Verified',
+            width: 100,
+            editable: false,
+        },
+        {
+            field: 'ethereumAddress',
+            headerName: 'Ethereum Address',
+            width: 360,
+            editable: false,
+        },
+        {
+            field: 'reject',
+            headerName: 'Reject',
+            width: 100,
+            editable: false,
+            renderCell: (rowData) => {
+                const handleAction = () => {
+                    setVoterConfirmationDialogOpen(true);
+                    setConfirmationTopic("confirmation")
+                    setVoterConfirmationTitle("Voter Registration Rejection");
+                    setVoterConfirmationMessage("Are you sure you want to reject this request ?");
+                }
+                return (
+                    <Tooltip title="Reject Request">
+                        <IconButton onClick={handleAction}>
+                            <MdFreeCancellation />
+                        </IconButton>
+                    </Tooltip>
+                )
+            }
+        },
+        {
+            field: 'confirm',
+            headerName: 'Confirm',
+            width: 100,
+            editable: false,
+            renderCell: (rowData) => {
+                const handleAction = () => {
+                    setConfirmVoterAddress(rowData.row.ethereumAddress);
+                    setVoterConfirmationDialogOpen(true);
+                    setConfirmationTopic("confirmation")
+                    setVoterConfirmationTitle("Voter Registration Confirmation");
+                    setVoterConfirmationMessage("Are you sure you want to register this voter to blockchain ?");
+
+                }
+                return (
+                    <Box>
+                        <Tooltip title="Confirm Registration">
+                            <IconButton onClick={handleAction}>
+                                <GrFormCheckmark />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                )
+            }
+        },
+
+
+    ];
+    const PendingVoterRegistration = () => {
+        const [pendingVoters, setPendingVoters] = useState([]);
+
+        useEffect(() => {
+            const HandleFetchData = async () => {
+                try {
+                    const response = await client.get("voter/pending");
+                    setPendingVoters(response.data.pendingVoters);
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            }
+            HandleFetchData();
+        }, [])
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', m: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', m: 2 }}>
+                    <Typography component="h5" variant="h5" sx={{ m: 1 }}>
+                        Pending Voter Registration
+                    </Typography>
+                </Box>
+                <Box sx={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={pendingVoters}
+                        columns={PendingVoterRegistrationRequestColumns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        disableSelectionOnClick
+                    />
+                </Box>
+            </Box>)
+    }
+    //Confirm Pending Voter end
+    const [voterConfirmationDialogOpen, setVoterConfirmationDialogOpen] = useState(false);
+    const [voterConfirmationTitle, setVoterConfirmationTitle] = useState("");
+    const [voterConfirmationMessage, setVoterConfirmationMessage] = useState("");
+    const [confirmationTopic, setConfirmationTopic] = useState("");
+
+    const voterConfirmationTitleClose = () => {
+        setVoterConfirmationDialogOpen(false);
+    }
+
+    const VoterConfirmationDialog = ({ open, title, message, handleClose }) => {
+
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(false);
+        const [errorMessage, setErrorMessage] = useState("");
+        const [statusMessage, setStatusMessage] = useState("");
+        const [success, setSuccess] = useState(false);
+        const [statusOpen, setStatusOpen] = useState(false);
+        const [statusTitle, setStatusTitle] = useState("");
+
+
+
+        const handleSubmission = async () => {
+            let endpoint = "";
+            if (confirmationTopic === "confirmation") {
+                endpoint = "/voter/confirm";
+            } else if (confirmationTopic === "rejection") {
+                endpoint = "/voter/reject";
+            }
+            try {
+                setLoading(true);
+
+                const response = await client.post(endpoint, {
+                    ethereumAddress: confirmVoterAddress,
+                });
+                console.log(response.data)
+                setLoading(false);
+                setStatusTitle("Address Registered")
+                setStatusMessage("Voter address registered successfully")
+            }
+            catch (e) {
+                //render failure
+                setError(true);
+                setErrorMessage("Error occurred while confirming voter registration");
+                console.log(e)
+            }
+        }
+        const ProcessingDialog = ({ error }) => {
+            setStatusOpen(true);
+            return (
+                <Dialog open={true}>
+                    <DialogTitle>Processing</DialogTitle>
+                    <LinearProgress />
+                    <ListItemText sx={{ p: 3 }}>Registering address to the blockchain</ListItemText>
+                </Dialog>
+            )
+        }
+        const StatusDialog = ({ open, title, message, handleClose }) => {
+            return (
+                <Dialog open={open}>
+                    <DialogTitle>{title}</DialogTitle>
+                    <ListItemText sx={{ p: 3 }}>{message}</ListItemText>
+                    <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Button onClick={handleClose} sx={{ color: "#fff" }} variant="contained">Close</Button>
+                    </Box>
+                </Dialog>
+            )
+        }
+        const statusHandleClose = () => {
+            setStatusOpen(false);
+            setVoterConfirmationDialogOpen(false);
+        }
+
+
+        return (
+            <Dialog open={open}>
+                {loading ? <ProcessingDialog /> : <StatusDialog open={statusOpen} title={statusTitle} message={statusMessage} handleClose={statusHandleClose} />}
+                <DialogTitle>{title}</DialogTitle>
+                <ListItemText sx={{ p: 1 }}>{message}</ListItemText>
+                <Box sx={{ display: 'flex', p: 4 }}>
+                    <Button onClick={handleSubmission} sx={{ width: '80%', mr: 2 }} variant="outlined" size="medium" endIcon={<FaVoteYea />}>{loading ? <CircularProgress /> : "Confirm"}</Button>
+                    <Button onClick={handleClose} sx={{ width: '80%' }} variant="outlined" size="medium" startIcon={<MdCancel />}>Cancel</Button>
+                </Box>
+            </Dialog>
+        )
+    }
 
 
     return (
@@ -379,6 +454,7 @@ const VoterRegistration = () => {
             <LeftBar />
             <Box sx={{ flex: 4, height: '100vh', overflowY: 'scroll' }}>
                 <TopBar />
+                <VoterConfirmationDialog open={voterConfirmationDialogOpen} title={voterConfirmationTitle} message={voterConfirmationMessage} handleClose={voterConfirmationTitleClose} />
                 <Backdrop
                     sx={{ color: '#000', zIndex: 100 }}
                     open={backDropOpen}
@@ -393,7 +469,6 @@ const VoterRegistration = () => {
                                 </Box>
                             </Box> : <Box sx={{ color: "#000" }}>
                                 {message ? message : error}
-                                {console.log("Error", error, "Message", message)}
                             </Box>}
 
 
@@ -439,7 +514,7 @@ const VoterRegistration = () => {
                             <TextField onChange={HandleChange} sx={{ borderRadius: theme.border.regular, width: "45%" }} name="region" id="outlined-basic" label="Region" variant="outlined" />
                             {user.data.isAdmin && <TextField onChange={HandleChange} sx={{ border: theme.border.regular, width: "100%" }} id="outlined-basic" name="userId" label="User Id" variant="outlined" />}
                             <Box sx={{ alignItems: 'center', width: "100%", display: 'flex', justifyContent: 'space-between' }}>
-                                <TextField onChange={HandleChange} sx={{ borderRadius: theme.border.regular, width: user.data.isAdmin ? '100%' : '55%' }} defaultValue={account ? account : ''} name="votersAddress" id="outlined-basic" label={account ? "" : "Ethereum Address"} variant="outlined" />
+                                <TextField onChange={HandleChange} sx={{ borderRadius: theme.border.regular, width: user.data.isAdmin ? '100%' : '55%' }} value={account ? account : ''} name="votersAddress" id="outlined-basic" label={account ? "" : "Ethereum Address"} variant="outlined" />
                                 {!user.data.isAdmin && <Box sx={{ width: '10%', display: 'flex', justifyContent: 'center' }}>
                                     <Typography component="p" variant="p">OR</Typography>
                                 </Box>}
@@ -453,7 +528,7 @@ const VoterRegistration = () => {
                     <Button onClick={HandleSubmit} sx={{ mr: 3, color: theme.palette.primary.white }} size="large" variant="contained">{user.data.isAdmin ? "Register" : "Submit Data"}</Button>
                 </Box>
                 {user.data.isAdmin && <PendingVoterRegistration />}
-                <RegisteredVoters />
+                <RegisteredVoters dependency={confirmVoterAddress}/>
             </Box>
         </Box>
     )

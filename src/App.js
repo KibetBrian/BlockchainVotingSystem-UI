@@ -11,6 +11,7 @@ import LeftBar from './sections/LeftBar'
 import { useSelector } from 'react-redux'
 import VoterRegistration from './sections/VoterRegistration'
 import ContestantRegistration from './sections/ContestantRegistration'
+import ManageElection from './sections/ManageElection'
 import SystemInformation from './sections/SystemInformation'
 import SignUp from './pages/SignUp'
 
@@ -33,6 +34,7 @@ const App = () => {
           <Route path={"/voter/registration"} element={<VoterRegistration />} />
           <Route path="contestants" element={<Contestants />} />
           <Route path={"/contestant/registration"} element={<ContestantRegistration />} />
+          <Route path={"/manage/election"} element={<ManageElection />} />
           <Route path={"/information"} element={<SystemInformation />} />
         </Route>
 
