@@ -163,6 +163,7 @@ const UserCard = ({ data }) => {
     const [account, setAccount] = useState(null);
     const ContractAddress = "0x3311797f5BE82be3550dd3d22BF1AC76A6118C4F";
     let ethereum = window.ethereum;
+    
 
     const ConnectMetamask = async () => {
         if (!ethereum) {
@@ -190,6 +191,7 @@ const UserCard = ({ data }) => {
 
             const votingPhase = await contractInstance.GetVotingPhase();
             setVotingPhase(votingPhase);
+            
 
             const registrationPhase = await contractInstance.GetRegisrationPhase();
             setRegistrationPhase(registrationPhase);

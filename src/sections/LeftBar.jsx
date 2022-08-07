@@ -36,15 +36,15 @@ const listData = [
         to: "/contestant/registration"
     },
     {
+        title: "ManageElection",
+        Icon: <MdOutlineManageAccounts style={{ fontSize: '20px' }} />,
+        to: "/manage/election"
+    },
+    {
         title: "SystemInformation",
         Icon: <TiNews style={{ fontSize: '20px' }} />,
         to: "/information"
     },
-    {
-        title: "ManageElection",
-        Icon: <MdOutlineManageAccounts style={{ fontSize: '20px' }} />,
-        to: "/manage/election"
-    }
 ]
 
 const ListComponent = (props) => {
@@ -73,7 +73,7 @@ const ListComponent = (props) => {
 
 
     return (
-        <Box key={props.key} sx={{ display: props.key === 3 && !user.isAdmin ? 'none' : '' }}>
+        <Box key={props.key} sx={{ display: props.key === 3 || props.key ===  4 && !user.isAdmin ? 'none' : '' }}>
             <ListItemButton component={RouterLink} to={props.object.to} onClick={() => setSelected(true)} key={props.key} selected={isActive} sx={isActive ? activeStyle : normalStyle}>
                 {props.object.Icon}
                 <Box sx={{ fontSize: '16px', ml: 2 }}>
@@ -125,7 +125,7 @@ const LeftBar = () => {
 
             <Box sx={{ flex: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'end', borderRadius: theme.border.regular, width: '100%', height: '90%', backgroundColor: theme.palette.primary.lightGreen }}>
-                    <Button sx={{ borderRadius: theme.border.auth, color: theme.palette.primary.white, mb: 1, p: 1, "&:hover": { backgroundColor: theme.palette.primary.darkGreen }, backgroundColor: theme.palette.primary.main, height: 40 }} variant="text">Discover Pro</Button>
+                    <Button sx={{ borderRadius: theme.border.auth, color: theme.palette.primary.white, mb: 1, p: 1, "&:hover": { backgroundColor: theme.palette.primary.darkGreen }, backgroundColor: theme.palette.primary.main, height: 40 }} variant="text">See Results</Button>
                 </Box>
             </Box>
 
