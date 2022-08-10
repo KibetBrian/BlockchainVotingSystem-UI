@@ -21,7 +21,6 @@ const Feed = () => {
   const [TotalVoters, setTotalVoters] = useState(0);
   const [TotalUsers, setTotalUsers] = useState(0);
   const [TotalVotedVoters, setTotalVotedVoters] = useState(0);
-  console.log(userData)
 
   useEffect(() => {
 
