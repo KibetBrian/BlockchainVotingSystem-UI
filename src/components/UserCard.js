@@ -18,7 +18,6 @@ const ProcessingDialog = ({ open, message, error, handleClose }) => {
 
     const user = useSelector(state => state.user);
 
-
     return (
 
         <Backdrop
@@ -27,9 +26,9 @@ const ProcessingDialog = ({ open, message, error, handleClose }) => {
         >
             <Stack>
                 <Box sx={{ height: "250px", borderRadius: theme.border.regular, width: "300px", color: "#fff", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: "center", backgroundColor: "#fff" }}>
-
+                    {console.log(user.isFetching, "User if fetching")}
                     {user.isFetching ? <Box>
-                        <Typography sx={{ color: "#000", mt: 1 }} component="h5" variant="h5">Processing Submitted Data</Typography>
+                        <Typography sx={{ color: "#000", mt: 1 }} component="h5" variant="h5">Casting your vote</Typography>
                         <Box sx={{ width: '100%', mt: 2 }}>
                             <LinearProgress />
                         </Box>
@@ -46,7 +45,9 @@ const ProcessingDialog = ({ open, message, error, handleClose }) => {
                     </Button>
                 </Box>
             </Stack>
-        </Backdrop>)
+        </Backdrop>
+
+    )
 }
 
 
@@ -88,22 +89,35 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
 
     const HandleCastingProcess = async () => {
 
+        setProcessingDialogOpen(true)
+        dispatch(isFetching(true));
+
         ConnectMetamask();
 
         const president = "president"
         const governor = "governor"
 
-        const ContractAddress = "0x3311797f5BE82be3550dd3d22BF1AC76A6118C4F";
+        const ContractAddress = "0xcbF73404D5c90994A6Fb0107405263892F4b6d29";
+
         let ethereum = window.ethereum;
         const provider = new ethers.providers.Web3Provider(ethereum)
         const signer = provider.getSigner()
         const contractInstance = new ethers.Contract(ContractAddress, abi, signer);
+
         console.log(contractInstance)
         if (data.position === president) {
-            setProcessingDialogOpen(true)
-            console.log("Ethereum address", data.ethereumAddress)
             const response = await contractInstance.CastPresident(data.ethereumAddress);
-            console.log(response);
+            const another =  await response.wait();
+            
+            console.log("This is response from the blockchain",another);
+            setProcessingDialogMessage("You have successfully cast your vote");
+            dispatch(isFetching(false));
+            try{
+                //Update user voted
+            }catch(e){
+                //Error occurred
+                setProcessingDialogError(e);
+            }
         }
         if (data.position === governor) {
             const response = await contractInstance.CastGovernor(data.ethereumAddress);
@@ -151,7 +165,6 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
 const UserCard = ({ data }) => {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user);
-    console.log("User from card ", user)
 
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [votingPhase, setVotingPhase] = useState(false);
@@ -161,9 +174,10 @@ const UserCard = ({ data }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [account, setAccount] = useState(null);
-    const ContractAddress = "0x3311797f5BE82be3550dd3d22BF1AC76A6118C4F";
+    const ContractAddress = "0xcbF73404D5c90994A6Fb0107405263892F4b6d29";
+
     let ethereum = window.ethereum;
-    
+
 
     const ConnectMetamask = async () => {
         if (!ethereum) {
@@ -172,6 +186,7 @@ const UserCard = ({ data }) => {
             return
         }
         let accounts = await ethereum.request({ method: 'eth_accounts' });
+        console.log(accounts, "This is accounts")
         setAccount(accounts[0]);
 
         if (!account) {
@@ -191,7 +206,8 @@ const UserCard = ({ data }) => {
 
             const votingPhase = await contractInstance.GetVotingPhase();
             setVotingPhase(votingPhase);
-            
+            console.log("Voting phase", votingPhase)
+
 
             const registrationPhase = await contractInstance.GetRegisrationPhase();
             setRegistrationPhase(registrationPhase);
@@ -209,7 +225,6 @@ const UserCard = ({ data }) => {
     const handleDialogClose = () => {
         setConfirmDialogOpen(false)
     }
-    console.log(user)
 
     return (
         <Box>
