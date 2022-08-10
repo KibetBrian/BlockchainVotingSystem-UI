@@ -89,7 +89,6 @@ const Login = () => {
     try {
       const response = await client.post('/user/login', enteredData);
       dispatch(setUserData(response.data))
-      console.log("This is user",user)
     } catch (e) {
       console.log(e);
       switch (e.response.status) {
