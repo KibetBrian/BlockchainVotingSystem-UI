@@ -14,6 +14,7 @@ import ContestantRegistration from './sections/ContestantRegistration'
 import ManageElection from './sections/ManageElection'
 import SystemInformation from './sections/SystemInformation'
 import SignUp from './pages/SignUp'
+import Results from './sections/Results'
 
 const App = () => {
   const user = useSelector(state => state.user);
@@ -31,11 +32,12 @@ const App = () => {
             <Route path={"/auth/signup"} element={user.data ? <Navigate to="/" /> : <SignUp />} />
           </Route>
           <Route path={"news"} element={<News />} />
-          <Route path={"/voter/registration"} element={<VoterRegistration />} />
-          <Route path="contestants" element={<Contestants />} />
-          <Route path={"/contestant/registration"} element={<ContestantRegistration />} />
-          <Route path={"/manage/election"} element={<ManageElection />} />
-          <Route path={"/information"} element={<SystemInformation />} />
+          <Route path={"/voter/registration"} element={user.data ? <VoterRegistration />: <Navigate to="/auth/login" />} />
+          <Route path="contestants" element={ user.data ? <Contestants />: <Navigate to="/auth/login" /> } />
+          <Route path={"/contestant/registration"} element={ user.data ? <ContestantRegistration />: <Navigate to="/auth/login" />} />
+          <Route path={"/manage/election"} element={ user.data ? <ManageElection />: <Navigate to="/auth/login" />} />
+          <Route path={"/information"} element={user.data ? <SystemInformation />: <Navigate to="/auth/login" />} />
+          <Route path={"/results"} element={user.data ? <Results />: <Navigate to="/auth/login" />} />
         </Route>
 
       </Routes>
