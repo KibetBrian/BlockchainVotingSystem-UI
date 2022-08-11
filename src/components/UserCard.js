@@ -13,6 +13,8 @@ import userSlice, { isFetching } from '../redux/userSlice'
 import abi from '../abi.json'
 import { MdCancel } from 'react-icons/md'
 import ClickAwayListener from '@mui/base/ClickAwayListener';
+import client from '../axios';
+import { setUserData } from '../redux/userSlice';
 
 const ProcessingDialog = ({ open, message, error, handleClose }) => {
 
@@ -54,6 +56,9 @@ const ProcessingDialog = ({ open, message, error, handleClose }) => {
 const ConfirmDialog = ({ data, open, handleDialogClose }) => {
 
     const dispatch = useDispatch();
+    const user = useSelector(state => state.user);
+    console.log("This is user", user)
+
 
     const [errorMessage, setErrorMessage] = useState('');
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -97,7 +102,7 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
         const president = "president"
         const governor = "governor"
 
-        const ContractAddress = "0xcbF73404D5c90994A6Fb0107405263892F4b6d29";
+        const ContractAddress = "0xd0F0af13462445A9053C88a512Acb27f9fB6BFB8";
 
         let ethereum = window.ethereum;
         const provider = new ethers.providers.Web3Provider(ethereum)
@@ -110,22 +115,35 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
             const another =  await response.wait();
             
             console.log("This is response from the blockchain",another);
-            setProcessingDialogMessage("You have successfully cast your vote");
-            dispatch(isFetching(false));
             try{
                 //Update user voted
+                console.log("User from try ang catc", user)
+                const response = await client.post(`/voted/${data.position}`, {email: user.data.email});
+                setProcessingDialogMessage("You have successfully cast your vote");
+                dispatch(isFetching(false));
+                console.log("Response frfrom db", response)
             }catch(e){
                 //Error occurred
+                dispatch(isFetching(false));
+                setProcessingDialogMessage("Error occurred while casting your vote");
                 setProcessingDialogError(e);
+                console.log(e)
             }
         }
         if (data.position === governor) {
             const response = await contractInstance.CastGovernor(data.ethereumAddress);
-            console.log(response);
+            try{
+                //Update user voted
+                const response = client.post(`/voted/${data.position}`, {userId: data.user.email});
+                setProcessingDialogMessage("You have successfully cast your vote");
+                dispatch(setUserData(response.data))
+                dispatch(isFetching(false));
+            }catch(e){
+                //Error occurred
+                setProcessingDialogMessage("Error occurred while casting your vote");
+                setProcessingDialogError(e);
+            }
         }
-
-        console.log("Contract Instance", contractInstance);
-        console.log("This is contestant data", data)
 
     }
 
@@ -206,8 +224,6 @@ const UserCard = ({ data }) => {
 
             const votingPhase = await contractInstance.GetVotingPhase();
             setVotingPhase(votingPhase);
-            console.log("Voting phase", votingPhase)
-
 
             const registrationPhase = await contractInstance.GetRegisrationPhase();
             setRegistrationPhase(registrationPhase);
