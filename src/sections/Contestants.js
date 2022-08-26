@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
 import { isFetching } from '../redux/userSlice'
 import { Typography } from '@mui/material'
-import {theme} from '../theme'
+import { theme } from '../theme'
 const Contestants = () => {
   const positions = [
     {
@@ -82,8 +82,8 @@ const Contestants = () => {
           sx={{ color: '#000', zIndex: 100 }}
           open={user.isFetching}
         >
-          <Box sx = {{width: "300px", height: "250px",display: 'flex', flexDirection: 'column',alignItems: 'center', justifyContent: 'center', backgroundColor: "#fff", borderRadius: theme.border.regular}}>
-            <Typography sx={{ color: "#000", mt: 1 }} component="h5" variant="h5">{"Fetching "+ currentPage}</Typography>
+          <Box sx={{ width: "300px", height: "250px", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: "#fff", borderRadius: theme.border.regular }}>
+            <Typography sx={{ color: "#000", mt: 1 }} component="h5" variant="h5">{"Fetching " + currentPage}</Typography>
             <Box sx={{ width: '100%', mt: 3 }}>
               <LinearProgress />
             </Box>
