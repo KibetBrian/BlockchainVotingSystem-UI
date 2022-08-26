@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import LeftBar from '../sections/LeftBar'
-import Feed from '../components/Feed'
+import Feed from './Feed'
 
 
 
