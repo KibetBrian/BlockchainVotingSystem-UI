@@ -70,10 +70,10 @@ const ListComponent = (props) => {
         fontSize: '16px',
         p: 3
     }
-
+    const adminFunctionality = props.object.title === "ManageElection" || props.object.title === "ContestantRegistration"
 
     return (
-        <Box key={props.key} sx={{ display: props.key === 3 && !user.isAdmin ? 'none' : '' }}>
+        <Box key={props.key} sx={{ display: adminFunctionality && !user.isAdmin ? 'none' : '' }}>
             <ListItemButton component={RouterLink} to={props.object.to} onClick={() => setSelected(true)} key={props.key} selected={isActive} sx={isActive ? activeStyle : normalStyle}>
                 {props.object.Icon}
                 <Box sx={{ fontSize: '16px', ml: 2 }}>
