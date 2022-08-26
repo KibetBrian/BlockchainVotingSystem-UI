@@ -57,8 +57,6 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.user);
-    console.log("This is user", user)
-
 
     const [errorMessage, setErrorMessage] = useState('');
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -72,7 +70,6 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
     const handleClose = () => {
         setProcessingDialogOpen(false);
     }
-
 
     const ConnectMetamask = async () => {
         let ethereum = window.ethereum;
@@ -98,6 +95,7 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
         dispatch(isFetching(true));
 
         ConnectMetamask();
+        console.log("Connect metamask casting");
 
         const president = "president"
         const governor = "governor"
@@ -158,7 +156,7 @@ const ConfirmDialog = ({ data, open, handleDialogClose }) => {
             <Card sx={{ width: 300, mt: 4, borderRadius: theme.border.regular }}>
                 <CardMedia sx={{ objectFit: 'inherit' }}
                     component="img"
-                    height="160"
+                    height="200"
                     image={data.imageAddress}
                     alt="green iguana"
 
@@ -204,7 +202,6 @@ const UserCard = ({ data }) => {
             return
         }
         let accounts = await ethereum.request({ method: 'eth_accounts' });
-        console.log(accounts, "This is accounts")
         setAccount(accounts[0]);
 
         if (!account) {
@@ -213,6 +210,7 @@ const UserCard = ({ data }) => {
             return
         }
     }
+   
 
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner()
@@ -248,7 +246,7 @@ const UserCard = ({ data }) => {
             <Card sx={{ width: 350, mt: 4, borderRadius: theme.border.regular }}>
                 <CardMedia sx={{ objectFit: 'inherit' }}
                     component="img"
-                    height="160"
+                    height="200"
                     image={data.imageAddress}
                     alt="green iguana"
 
