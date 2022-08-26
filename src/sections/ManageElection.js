@@ -37,10 +37,8 @@ const ConfirmDialog = ({ dialogOpen, handleDialogClose, topic }) => {
         try {
             const response = await axios.post(`http://localhost:8000/phase/${topic}`);
             setProcessingDialogMessage(response.data.message);
-            console.log(response, "Data from posting")
             setProcessing(false)
         } catch (e) {
-            console.log(e)
             setProcessingDialogMessage("Error which changing state")
             setProcessing(false)
         }
@@ -75,10 +73,13 @@ const Manage = () => {
         const FetchPhases = async () => {
             try {
                 const reg = await axios.get('http://localhost:8000/registration_phase');
-                setPhases({ ...phases, registrationPhase: reg.data.registrationPhase });
+                setPhases(prev=>({...prev, registrationPhase: reg.data.registrationPhase}));
 
                 const vote = await axios.get('http://localhost:8000/voting_phase');
-                setPhases({ ...phases, votingPhase: vote.data.votingPhase });
+                setPhases(prev=>({...prev, votingPhase: vote.data.votingPhase}));
+
+                const resultsPhase = await axios.get('http://localhost:8000/results/phase');
+                setPhases(prev=>({...prev, resultsPhase: resultsPhase.data.resultsPhase}));
 
             } catch (e) {
                 console.log("Failed to get phases. Error: ", e)
@@ -86,9 +87,6 @@ const Manage = () => {
         }
         FetchPhases();
     }, [dialogOpen]);
-
-
-
 
     const handleDialogClose = () => {
         setDialogOpen(false)
@@ -100,8 +98,8 @@ const Manage = () => {
     }
     return (
         <Box sx={{ display: 'flex' }}>
-            <LeftBar />
-            <ConfirmDialog topic={dialogTopic} dialogOpen={dialogOpen} handleDialogClose={handleDialogClose} />
+            <LeftBar />            
+            {dialogOpen && <ConfirmDialog topic={dialogTopic} dialogOpen={dialogOpen} handleDialogClose={handleDialogClose} />}
             <Box sx={{ flex: 4, background: 'linear-gradient(to left, #fff, #c8facd)' }}>
                 <Stack>
                     <Typography sx={{ mt: 3, color: theme.palette.primary.main }} variant="text" component="h2">Current States</Typography>
