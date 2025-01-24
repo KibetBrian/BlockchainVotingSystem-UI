@@ -118,7 +118,6 @@ const CardComponent = React.memo(({ data }) => (
   </Card>
 ));
 
-// Main Results component with optimized data fetching and filtering
 const Results = () => {
   const [data, setData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
