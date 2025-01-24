@@ -15,11 +15,12 @@ import ContestantRegistration from './sections/ContestantRegistration';
 import ManageElection from './sections/ManageElection';
 import SystemInformation from './sections/SystemInformation';
 import Results from './sections/Results';
+import NotFound from './pages/404';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const user = useSelector(state => state.user.data);
-  
+
   return user ? children : <Navigate to="/auth/login" />;
 };
 
@@ -56,6 +57,7 @@ const App = () => {
 
         {/* News Route (Public) */}
         <Route path="/news" element={<News />} />
+        <Route path="/404" element={<NotFound />} />
 
         {/* Protected Routes */}
         <Route
@@ -116,7 +118,7 @@ const App = () => {
         />
 
         {/* Catch all route - 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </BrowserRouter>
   );
