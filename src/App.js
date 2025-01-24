@@ -1,48 +1,125 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-import React, { useState } from 'react'
-import { Box } from '@mui/material'
-import Login from './pages/Login'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Home from './pages/Home'
-import Contestants from './sections/Contestants'
-import WatchList from './sections/WatchList'
-import News from './sections/News'
-import LeftBar from './sections/LeftBar'
-import { useSelector } from 'react-redux'
-import VoterRegistration from './sections/VoterRegistration'
-import ContestantRegistration from './sections/ContestantRegistration'
-import ManageElection from './sections/ManageElection'
-import SystemInformation from './sections/SystemInformation'
-import SignUp from './pages/SignUp'
-import Results from './sections/Results'
+// Pages
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import Home from './pages/Home';
+
+// Sections
+import Contestants from './sections/Contestants';
+import News from './sections/News';
+import VoterRegistration from './sections/VoterRegistration';
+import ContestantRegistration from './sections/ContestantRegistration';
+import ManageElection from './sections/ManageElection';
+import SystemInformation from './sections/SystemInformation';
+import Results from './sections/Results';
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const user = useSelector(state => state.user.data);
+  
+  return user ? children : <Navigate to="/auth/login" />;
+};
+
+// Public Route Component
+const PublicRoute = ({ children }) => {
+  const user = useSelector(state => state.user.data);
+
+  return user ? <Navigate to="/" /> : children;
+};
 
 const App = () => {
-  const user = useSelector(state => state.user);
-
-
   return (
     <BrowserRouter>
-
       <Routes>
-
-        <Route path='/'>
-          <Route index element={user.data ? <Home /> : <Navigate to="/auth/login" />} />
-          <Route path={"/auth/"}>
-            <Route path={"/auth/login"} element={user.data ? <Navigate to="/" /> : <Login />} />
-            <Route path={"/auth/signup"} element={user.data ? <Navigate to="/" /> : <SignUp />} />
-          </Route>
-          <Route path={"news"} element={<News />} />
-          <Route path={"/voter/registration"} element={user.data ? <VoterRegistration />: <Navigate to="/auth/login" />} />
-          <Route path="contestants" element={ user.data ? <Contestants />: <Navigate to="/auth/login" /> } />
-          <Route path={"/contestant/registration"} element={ user.data ? <ContestantRegistration />: <Navigate to="/auth/login" />} />
-          <Route path={"/manage/election"} element={ user.data ? <ManageElection />: <Navigate to="/auth/login" />} />
-          <Route path={"/information"} element={user.data ? <SystemInformation />: <Navigate to="/auth/login" />} />
-          <Route path={"/results"} element={user.data ? <Results />: <Navigate to="/auth/login" />} />
+        {/* Public Routes */}
+        <Route path="/auth">
+          <Route
+            path="login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="signup"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
         </Route>
 
+        {/* News Route (Public) */}
+        <Route path="/news" element={<News />} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/voter/registration"
+          element={
+            <ProtectedRoute>
+              <VoterRegistration />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contestants"
+          element={
+            <ProtectedRoute>
+              <Contestants />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contestant/registration"
+          element={
+            <ProtectedRoute>
+              <ContestantRegistration />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manage/election"
+          element={
+            <ProtectedRoute>
+              <ManageElection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/information"
+          element={
+            <ProtectedRoute>
+              <SystemInformation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/results"
+          element={
+            <ProtectedRoute>
+              <Results />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch all route - 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
 
-export default App
+export default App;
