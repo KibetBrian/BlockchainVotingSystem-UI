@@ -124,22 +124,22 @@ const Results = () => {
   
   const dispatch = useDispatch();
   const { isFetching: isLoading } = useSelector(state => state.user);
-
-  const fetchData = async () => {
-    try {
-      dispatch(isFetching(true));
-      const { data: results } = await client.get("/results/presidential");
-      setData(results);
-    } catch (error) {
-      console.error("Failed to fetch results:", error);
-    } finally {
-      dispatch(isFetching(false));
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          dispatch(isFetching(true));
+          const { data: results } = await client.get("/results/presidential");
+          setData(results);
+        } catch (error) {
+          console.error("Failed to fetch results:", error);
+        } finally {
+          dispatch(isFetching(false));
+        }
+      };
+  
+      fetchData();
+    }, [dispatch]); 
 
   const filteredData = data.filter(candidate => 
     candidate.fullName.toLowerCase().includes(searchInput.toLowerCase())
