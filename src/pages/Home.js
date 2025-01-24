@@ -3,8 +3,6 @@ import { Box } from '@mui/material'
 import LeftBar from '../sections/LeftBar'
 import Feed from './Feed'
 
-
-
 const Home = () => {
     return (
         <Box sx={{ display: 'flex' }}>
